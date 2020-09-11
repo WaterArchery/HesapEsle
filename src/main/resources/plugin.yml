@@ -1,0 +1,12 @@
+name: HesapEsle
+version: ${project.version}
+main: waterArchery.HesapEsle.HesapEsleMain
+authors: [ WaterArchery ]
+description: Discord hesabınızı oyun hesabınızla eşleyin
+commands:
+  esle:
+    description: Temel komut
+  eşle:
+    description: Temel komut
+  verify:
+    description: Fundamental command

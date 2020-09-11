@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/atmac/Downloads/Discord_Bot_API_-_V3.0.jar"/>
+	<classpathentry excluding="waterArchery/|waterArchery/HesapEsle/" kind="src" path="src"/>
+	<classpathentry kind="lib" path="C:/Users/atmac/Downloads/spigot-1.12.2 (1).jar"/>
+	<classpathentry kind="lib" path="src/plugin.yml"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

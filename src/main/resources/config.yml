@@ -1,0 +1,42 @@
+##Discordu kapsayan ayarlar
+Discord:
+  ##Bot komutunun çalışacağı ön ek
+  BotPrefix: '!'
+  ##Bot tokeni
+  BotToken: ''
+  ##Komutların yazılacağı kanal
+  KanalID: '714443835878539337'
+  ##Yanlış kod mesaj (5 saniye içinde kanaldan otomatik silinir)
+  KodBulunamadi: 'Böyle bir kod bulunmuyor!'
+  ##Doğrulama başarılı olsa bile oyuncu çevrimiçi değilse mesaj (5 saniye içinde kanaldan otomatik silinir)
+  OyuncuOffline: 'Oyuncu çevrimiçi değil!'
+  ##Eşleşinde yazılan mesaj
+  Eslendi: '%discord% isimli Discord hesabı %minecraft% isimli Minecraft hesabı ile eşlendi!'
+  ##Eşleşme başarılı olunca özelden mesaj yollansın mı
+  OzelMesaj: true
+  OzelMesajBaslik: 'Hesap Eşle'
+  OzelMesakIcerik: '%minecraft% hesabı ile Discord hesabını eşlediğin için teşekkür ederiz.\nÖdüllerini oyun içinden kontrol edebilirsin.\nSunucumuzda vakit geçirerek yeni ödüller kazanabilirsin.\n\nwww.Siteismi.com\nPlay.siteismi.com'
+##Oyunu kapsayan ayarlar
+Oyun:
+  ##Oyun içi ön ek
+  Prefix: '&8[&bDiscord&8]'
+  ##/eşle yazılınca çıkan mesaj
+  EslemeKodunuz: '&eEşleme kodunuz: &b%kod%'
+  ##/eşle yazılınca çıkan eşleşme kodunuzdan hemen sonra gönderilen mesaj
+  DiscordaGirin: '&eBu kodu &bDiscord''da &ebulunan &b#hesap-eşleme &eodasına girin!'
+  ##Hesap eşlenince oyundan gönderilen mesaj
+  HesapEslendi: '&eHesabınız başarıyla %discord% Discord hesabı ile eşlendi!'
+  ##Hesap başarıyla eşleşince konsol tarafından uygulanan komutlar
+  Komutlar:
+    - 'give %player% 264'
+    - 'give %player% 322'
+    - 'say %player% isimli oyuncu Discord hesabını doğruladı!'
+  ##Eğer oyuncu aşşağıda belirtilen yetkiye sahipse ona sağdaki rol verilir.
+  ##Örneğin 'discord.dogrulanmis / 739914223706177606' için oyuncuda oyun içinde 'discord.dogrulanmis'
+  ##Yetkisi bulunuyorsa '739914223706177606' idli discord yetkisi verilir.
+  Vipler:
+    - 'discord.mvip1 / 712342806017998918'
+    - 'discord.mvip / 665183546553401374'
+    - 'discord.vip1 / 665296028869591087'
+    - 'discord.vip / 665214404320821258'
+    - 'discord.dogrulanmis / 739914223706177606'
