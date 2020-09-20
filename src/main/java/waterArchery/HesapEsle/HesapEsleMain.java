@@ -149,22 +149,30 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
             channel.sendMessage(ConfigMain.KodBulunamadi).complete().delete().completeAfter(5, TimeUnit.SECONDS);
             return;
         }
+
         channel.deleteMessageById(channel.getLatestMessageId()).complete();
         if(MainCommand.kod.get(arguman) ==null){
             channel.sendMessage(ConfigMain.KodBulunamadi).complete().delete().completeAfter(5, TimeUnit.SECONDS);
             return;
         }
+
+        Player Oyuncu = MainCommand.kod.get(arguman);
         if(Bukkit.getPlayer(MainCommand.kod.get(arguman).getName())==null){
             channel.sendMessage(ConfigMain.OyuncuOffline).complete().delete().completeAfter(5, TimeUnit.SECONDS);
             return;
         }
-        Player Oyuncu = MainCommand.kod.get(arguman);
+        if (HesapEsleMain.data.get("Data." + ((Player) Oyuncu).getPlayer().getName()) != null) {
+            channel.sendMessage("Bu hesap zaten eşlenmiş!").complete().delete().completeAfter(5,TimeUnit.SECONDS);
+            return;
+        }
         if(ConfigMain.OzelMesaj){
             mesajGonder(user,Oyuncu);
         }
         channel.sendMessage(ConfigMain.Eslendi.replace("%minecraft%",Oyuncu.getPlayer().getName()
         ).replace("%discord%","<@!" + user.getId()+">")).complete();
         rolVer(guild,user,Oyuncu);
+        MainCommand.kod.remove(arguman);
+
         Oyuncu.sendMessage(ConfigMain.oyunPrefix + " " + ConfigMain.HesapEslendi.replace("%discord%",user.getName()));
         data.set("Data." + Oyuncu.getPlayer().getName(),true);
         dataSave();
