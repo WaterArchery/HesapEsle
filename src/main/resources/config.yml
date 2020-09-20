@@ -5,7 +5,8 @@ Discord:
   ##Bot tokeni
   BotToken: ''
   ##Komutların yazılacağı kanal
-  KanalID: '714443835878539337'
+  HesapEsleKanalID: 714443835878539337
+  RolEsleKanalID: 646969279580995584
   ##Yanlış kod mesaj (5 saniye içinde kanaldan otomatik silinir)
   KodBulunamadi: 'Böyle bir kod bulunmuyor!'
   ##Doğrulama başarılı olsa bile oyuncu çevrimiçi değilse mesaj (5 saniye içinde kanaldan otomatik silinir)
@@ -24,6 +25,7 @@ Oyun:
   EslemeKodunuz: '&eEşleme kodunuz: &b%kod%'
   ##/eşle yazılınca çıkan eşleşme kodunuzdan hemen sonra gönderilen mesaj
   DiscordaGirin: '&eBu kodu &bDiscord''da &ebulunan &b#hesap-eşleme &eodasına girin!'
+  RolDiscordaGirin: '&eBu kodu &bDiscord''da &ebulunan &b#rol-eşleme &eodasına girin!'
   ##Hesap eşlenince oyundan gönderilen mesaj
   HesapEslendi: '&eHesabınız başarıyla %discord% Discord hesabı ile eşlendi!'
   ##Hesap başarıyla eşleşince konsol tarafından uygulanan komutlar
@@ -34,7 +36,7 @@ Oyun:
   ##Eğer oyuncu aşşağıda belirtilen yetkiye sahipse ona sağdaki rol verilir.
   ##Örneğin 'discord.dogrulanmis / 739914223706177606' için oyuncuda oyun içinde 'discord.dogrulanmis'
   ##Yetkisi bulunuyorsa '739914223706177606' idli discord yetkisi verilir.
-  Vipler:
+  Yetkiler:
     - 'discord.mvip1 / 712342806017998918'
     - 'discord.mvip / 665183546553401374'
     - 'discord.vip1 / 665296028869591087'

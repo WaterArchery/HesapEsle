@@ -17,6 +17,7 @@ import java.util.Random;
 public class MainCommand implements CommandExecutor {
 
     public static HashMap<Integer, Player> kod = new HashMap<>();
+    public static HashMap<Integer, Player> Rolkod = new HashMap<>();
 
     @Override
     public boolean onCommand(CommandSender o, Command cmd, String label, String[] args) {
@@ -47,6 +48,7 @@ public class MainCommand implements CommandExecutor {
                         }
                     } else {
                         o.sendMessage(ConfigMain.oyunPrefix + " §eHesabını zaten eşlemişsin!");
+
                     }
                 }
                 if(args.length == 1){
@@ -60,6 +62,23 @@ public class MainCommand implements CommandExecutor {
                             o.sendMessage(ConfigMain.oyunPrefix + " §eYetkiniz yok!");
                         }
 
+                    }
+                    if(args[0].equalsIgnoreCase("rol")){
+                        int rolCode = 0;
+                        for (int sayi = 1; sayi > 0; sayi++) {
+                            rolCode = new Random().nextInt(9999999);
+                            if (Rolkod.get(rolCode) == null) {
+                                break;
+                            }
+
+                        }
+                        o.sendMessage(ConfigMain.oyunPrefix + " §eRollerinizi almak için kodunuz: §b" + rolCode);
+                        o.sendMessage(ConfigMain.oyunPrefix + " " + ConfigMain.RolDiscordaGirin);
+                        if (Rolkod.get(rolCode) == null) {
+                            Rolkod.put(rolCode, (Player) o);
+                        } else {
+                            Rolkod.replace(rolCode, (Player) o);
+                        }
                     }
                 }
             }

@@ -55,7 +55,8 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
         ConfigMain.botPrefix = null;
         ConfigMain.token = null;
         ConfigMain.oyunPrefix = null;
-        ConfigMain.kanalID = null;
+        ConfigMain.hesapkanalID = null;
+        ConfigMain.rolkanalID = null;
         ConfigMain.OyuncuOffline = null;
         ConfigMain.Eslendi = null;
         ConfigMain.EslemeKodunuz = null;
@@ -139,9 +140,73 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
             }
 
         });
+        bot.addCommand(new ProgramCommand() {
+            @Override
+            public boolean run(User user, MessageChannel channel, Guild guild, String label, List<String> args) {
+                rolEsle(user,channel,guild,label,args);
+                return false;
+
+            }
+            @Override
+            public Permission getPermissionNeeded() {
+                return Permission.MESSAGE_WRITE;
+            }
+
+            @Override
+            public String getLabel() {
+                return "rol";
+            }
+
+            @Override
+            public String getDescription() {
+                return "Rolleri eşleme komutu";
+            }
+
+        });
+    }
+    void rolEsle(User user, MessageChannel channel,Guild guild, String label, List<String> args){
+        if(channel.getIdLong() != ConfigMain.rolkanalID){
+            channel.deleteMessageById(channel.getLatestMessageId()).complete();
+            channel.sendMessage("<#" + ConfigMain.rolkanalID + "> Kanalına yazmanız gerekiyor").complete().delete().completeAfter(5, TimeUnit.SECONDS);
+            return;
+        }
+        channel.deleteMessageById(channel.getLatestMessageId()).complete();
+        int arg;
+        try {
+            arg = Integer.parseInt(args.get(0));
+        } catch (NumberFormatException e) {
+            channel.sendMessage(ConfigMain.KodBulunamadi).complete().delete().completeAfter(5, TimeUnit.SECONDS);
+            return;
+        }
+        if(MainCommand.Rolkod.get(arg) ==null){
+            channel.sendMessage(ConfigMain.KodBulunamadi).complete().delete().completeAfter(5, TimeUnit.SECONDS);
+            return;
+        }
+        Player Oyuncu = MainCommand.Rolkod.get(arg);
+
+        for(String YetkiVeID : plugin.getConfig().getStringList("Oyun." + "Yetkiler")){
+            String[] parcalar = YetkiVeID.split(" / ");
+            if(guild.getRoleById(Long.parseLong(parcalar[1])) == null){
+                continue;
+            }
+            if(Oyuncu.hasPermission(parcalar[0])){
+                guild.getController().addRolesToMember(guild.getMember(user),guild.getJDA().getRoleById(Long.parseLong(parcalar[1]))).complete();
+                Oyuncu.sendMessage(ConfigMain.oyunPrefix + " §eOyundaki yetkiniz Discordda verildi!");
+                channel.sendMessage("Oyun içi rollerin Discord üzerinden verildi "  + "<@" + user.getIdLong() + "> ").complete()
+                        .delete().completeAfter(15,TimeUnit.SECONDS);
+                MainCommand.Rolkod.remove(arg);
+                return;
+            }
+        }
+
     }
 
     void dogrula(User user, MessageChannel channel, Guild guild, String label, List<String> args){
+        if(channel.getIdLong() != ConfigMain.hesapkanalID){
+            channel.deleteMessageById(channel.getLatestMessageId()).complete();
+            channel.sendMessage("<#" + ConfigMain.hesapkanalID + "> Kanalına yazmanız gerekiyor").complete().delete().completeAfter(5, TimeUnit.SECONDS);
+            return;
+        }
         int arguman;
         try {
             arguman = Integer.parseInt(args.get(0));
@@ -179,8 +244,8 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
         komutUygula(Oyuncu);
     }
 
-    void rolVer(Guild guild, User user, Player oyuncu){
-        for(String YetkiVeID : plugin.getConfig().getStringList("Oyun." + "Vipler")){
+    static void rolVer(Guild guild, User user, Player oyuncu){
+        for(String YetkiVeID : plugin.getConfig().getStringList("Oyun." + "Yetkiler")){
             String[] parcalar = YetkiVeID.split(" / ");
             if(guild.getRoleById(Long.parseLong(parcalar[1])) == null){
                 continue;
