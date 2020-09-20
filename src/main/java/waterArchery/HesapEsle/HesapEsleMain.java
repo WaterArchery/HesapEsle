@@ -44,6 +44,8 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
         Bukkit.getServer().getPluginCommand("esle").setExecutor(new MainCommand());
         Bukkit.getServer().getPluginCommand("eşle").setExecutor(new MainCommand());
         Bukkit.getServer().getPluginCommand("verify").setExecutor(new MainCommand());
+        Bukkit.getServer().getPluginCommand("hesapeşle").setExecutor(new MainCommand());
+        Bukkit.getServer().getPluginCommand("hesapesle").setExecutor(new MainCommand());
         Bukkit.getConsoleSender().sendMessage("Hesap Eşle - Komutlar yüklendi!");
         botOlustur();
     }

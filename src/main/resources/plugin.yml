@@ -10,3 +10,7 @@ commands:
     description: Temel komut
   verify:
     description: Fundamental command
+  hesapeşle:
+    description: Bilgi komutu
+  hesapesle:
+    description: Bilgi komutu

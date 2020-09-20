@@ -21,9 +21,13 @@ public class MainCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender o, Command cmd, String label, String[] args) {
+        if(cmd.getName().equalsIgnoreCase("hesapeşle")|cmd.getName().equalsIgnoreCase("hesapesle")){
+            o.sendMessage(ConfigMain.oyunPrefix + " §eHesap eşlemek için: §b/eşle §eyazabilirsiniz.");
+            o.sendMessage(ConfigMain.oyunPrefix + " §eRolleri eşlemek için: §b/eşle rol §eyazabilirsiniz.");
+            return false;
+        }
         if (cmd.getName().equalsIgnoreCase("esle") | cmd.getName().equalsIgnoreCase("verify")
                 | cmd.getName().equalsIgnoreCase("eşle")) {
-
             if (o instanceof Player) {
                 if (args.length == 0) {
                     if(!HesapEsleMain.aktif){
