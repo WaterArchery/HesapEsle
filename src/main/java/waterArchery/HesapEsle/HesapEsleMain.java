@@ -163,7 +163,7 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
             mesajGonder(user,Oyuncu);
         }
         channel.sendMessage(ConfigMain.Eslendi.replace("%minecraft%",Oyuncu.getPlayer().getName()
-        ).replace("%discord%",user.getName())).complete();
+        ).replace("%discord%","<@!" + user.getId()+">")).complete();
         rolVer(guild,user,Oyuncu);
         Oyuncu.sendMessage(ConfigMain.oyunPrefix + " " + ConfigMain.HesapEslendi.replace("%discord%",user.getName()));
         data.set("Data." + Oyuncu.getPlayer().getName(),true);
