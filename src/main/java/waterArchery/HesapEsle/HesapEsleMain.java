@@ -212,7 +212,7 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
         int arguman;
         try {
             arguman = Integer.parseInt(args.get(0));
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | IndexOutOfBoundsException e) {
             channel.sendMessage(ConfigMain.KodBulunamadi).complete().delete().completeAfter(5, TimeUnit.SECONDS);
             return;
         }
