@@ -24,8 +24,8 @@ Oyun:
   ##/eşle yazılınca çıkan mesaj
   EslemeKodunuz: '&eEşleme kodunuz: &b%kod%'
   ##/eşle yazılınca çıkan eşleşme kodunuzdan hemen sonra gönderilen mesaj
-  DiscordaGirin: '&eBu kodu &bDiscord''da &ebulunan &b#hesap-eşleme &eodasına girin!'
-  RolDiscordaGirin: '&eBu kodu &bDiscord''da &ebulunan &b#rol-eşleme &eodasına girin!'
+  DiscordaGirin: '&eBu kodu &bDiscord''da &ebulunan &b#hesap-eşleme &eodasına &b!eşle %kod% &eşeklinde girin!'
+  RolDiscordaGirin: '&eBu kodu &bDiscord''da &ebulunan &b#rol-eşleme &eodasına &b!rol %kod% &eşeklinde girin!'
   ##Hesap eşlenince oyundan gönderilen mesaj
   HesapEslendi: '&eHesabınız başarıyla %discord% Discord hesabı ile eşlendi!'
   ##Hesap başarıyla eşleşince konsol tarafından uygulanan komutlar

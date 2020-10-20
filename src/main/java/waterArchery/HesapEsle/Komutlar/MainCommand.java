@@ -44,7 +44,7 @@ public class MainCommand implements CommandExecutor {
                             }
                         }
                         o.sendMessage(ConfigMain.oyunPrefix + " " + ConfigMain.EslemeKodunuz.replace("%kod%", code + ""));
-                        o.sendMessage(ConfigMain.oyunPrefix + " " + ConfigMain.DiscordaGirin);
+                        o.sendMessage(ConfigMain.oyunPrefix + " " + ConfigMain.DiscordaGirin.replace("%kod%", code + ""));
                         if (kod.get(code) == null) {
                             kod.put(code, (Player) o);
                         } else {
@@ -77,7 +77,7 @@ public class MainCommand implements CommandExecutor {
 
                         }
                         o.sendMessage(ConfigMain.oyunPrefix + " §eRollerinizi almak için kodunuz: §b" + rolCode);
-                        o.sendMessage(ConfigMain.oyunPrefix + " " + ConfigMain.RolDiscordaGirin);
+                        o.sendMessage(ConfigMain.oyunPrefix + " " + ConfigMain.RolDiscordaGirin.replace("%kod%", rolCode + ""));
                         if (Rolkod.get(rolCode) == null) {
                             Rolkod.put(rolCode, (Player) o);
                         } else {
