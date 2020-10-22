@@ -18,8 +18,11 @@ public class ConfigMain {
     public static String OzelMesajBaslik;
     public static String OzelMesakIcerik;
     public static boolean OzelMesaj;
+    public static boolean TekDiscordEsleme;
     public static Long hesapkanalID;
     public static Long rolkanalID;
+    public static Long EslendiRolID;
+
 
     static Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("HesapEsle");
     public static void ConfigCekici(){
@@ -38,9 +41,11 @@ public class ConfigMain {
         HesapEslendi = plugin.getConfig().getString("Oyun." + "HesapEslendi").replace("&","§");
 
         OzelMesaj = plugin.getConfig().getBoolean("Discord." + "OzelMesaj");
+        TekDiscordEsleme = plugin.getConfig().getBoolean("Discord." + "TekDiscordEsleme");
 
         hesapkanalID = plugin.getConfig().getLong("Discord." + "HesapEsleKanalID");
         rolkanalID = plugin.getConfig().getLong("Discord." + "RolEsleKanalID");
+        EslendiRolID = plugin.getConfig().getLong("Discord." + "EslendiRolID");
 
 
 

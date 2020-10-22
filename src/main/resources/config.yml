@@ -7,6 +7,9 @@ Discord:
   ##Komutların yazılacağı kanal
   HesapEsleKanalID: 714443835878539337
   RolEsleKanalID: 646969279580995584
+  ##1 discord hesabı sadece tek hesabı eşlemek için kullanılır.
+  TekDiscordEsleme: true
+  EslendiRolID: 436534964096598026
   ##Yanlış kod mesaj (5 saniye içinde kanaldan otomatik silinir)
   KodBulunamadi: 'Böyle bir kod bulunmuyor!'
   ##Doğrulama başarılı olsa bile oyuncu çevrimiçi değilse mesaj (5 saniye içinde kanaldan otomatik silinir)
@@ -41,4 +44,3 @@ Oyun:
     - 'discord.mvip / 665183546553401374'
     - 'discord.vip1 / 665296028869591087'
     - 'discord.vip / 665214404320821258'
-    - 'discord.dogrulanmis / 739914223706177606'

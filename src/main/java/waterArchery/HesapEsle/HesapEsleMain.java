@@ -222,6 +222,12 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
             channel.sendMessage(ConfigMain.KodBulunamadi).complete().delete().completeAfter(5, TimeUnit.SECONDS);
             return;
         }
+        if(ConfigMain.TekDiscordEsleme){
+            if(guild.getMember(user).getRoles().contains(guild.getRoleById(ConfigMain.EslendiRolID))){
+                channel.sendMessage("Bu Discord hesabı ile zaten eşleme yapmışsınız!").complete().delete().completeAfter(5, TimeUnit.SECONDS);
+                return;
+            }
+        }
 
         Player Oyuncu = MainCommand.kod.get(arguman);
         if(Bukkit.getPlayer(MainCommand.kod.get(arguman).getName())==null){
@@ -239,7 +245,7 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
         ).replace("%discord%","<@!" + user.getId()+">")).complete();
         rolVer(guild,user,Oyuncu);
         MainCommand.kod.remove(arguman);
-
+        guild.getController().addRolesToMember(guild.getMember(user),guild.getJDA().getRoleById(ConfigMain.EslendiRolID)).complete();
         Oyuncu.sendMessage(ConfigMain.oyunPrefix + " " + ConfigMain.HesapEslendi.replace("%discord%",user.getName()));
         data.set("Data." + Oyuncu.getPlayer().getName(),true);
         dataSave();
