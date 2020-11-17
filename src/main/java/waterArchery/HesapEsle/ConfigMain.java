@@ -24,9 +24,8 @@ public class ConfigMain {
     public static Long EslendiRolID;
 
 
-    static Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("HesapEsle");
     public static void ConfigCekici(){
-
+        Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("HesapEsle");
         botPrefix = plugin.getConfig().getString("Discord." +"BotPrefix");
         token = plugin.getConfig().getString("Discord." + "BotToken");
         oyunPrefix = plugin.getConfig().getString("Oyun." + "Prefix").replace("&","§");

@@ -1,8 +1,5 @@
 package waterArchery.HesapEsle.Komutlar;
 
-import com.tjplaysnow.discord.object.Bot;
-import com.tjplaysnow.discord.object.CommandSpigotManager;
-import com.tjplaysnow.discord.object.ThreadSpigot;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

@@ -1,14 +1,11 @@
 package waterArchery.HesapEsle;
 
-import com.tjplaysnow.discord.object.Bot;
-import com.tjplaysnow.discord.object.CommandSpigotManager;
-import com.tjplaysnow.discord.object.ProgramCommand;
-import com.tjplaysnow.discord.object.ThreadSpigot;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.User;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -17,7 +14,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import waterArchery.HesapEsle.Eventler.EsleEvent;
 import waterArchery.HesapEsle.Komutlar.MainCommand;
+
+import javax.security.auth.login.LoginException;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -30,9 +30,9 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
 
     public static File dataFile;
     public static YamlConfiguration data;
-    public static Bot bot;
+    public JDA bot;
 
-    public static Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("HesapEsle");
+    public static Plugin plugin;
 
     @Override
     public void onEnable() {
@@ -71,20 +71,23 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
     }
     public static boolean aktif;
     static String TOKEN;
-    public void botOlustur(){
+    public static String PREFIX;
+    public void botOlustur() {
+        plugin = getPlugin(HesapEsleMain.class);
         TOKEN = ConfigMain.token;
-        String PREFIX = ConfigMain.botPrefix;
+        PREFIX = ConfigMain.botPrefix;
         if(TOKEN.equalsIgnoreCase("")){
             aktif = false;
             plugin.getServer().getConsoleSender().sendMessage("Token girilmediği için bot devredışı bırakıldı");
             return;
         }
         aktif = true;
-        bot = new Bot(TOKEN, PREFIX);
-        bot.setBotThread(new ThreadSpigot(plugin));
-        bot.setConsoleCommandManager(new CommandSpigotManager());
-        botKomutEkle();
-        Bukkit.getConsoleSender().sendMessage("Hesap Eşle - Bot oluşturuldu ve ve bot komutları eklendi");
+        try {
+            bot = JDABuilder.createDefault(TOKEN).addEventListeners(new EsleEvent()).build();
+        } catch (LoginException e) {
+            e.printStackTrace();
+        }
+        Bukkit.getConsoleSender().sendMessage("Hesap Eşle - Bot oluşturuldu ve ve bot komutları eklendi ");
         Bukkit.getConsoleSender().sendMessage("Hesap Eşle - Plugin aktif!");
     }
 
@@ -95,53 +98,8 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
             e.printStackTrace();
         }
     }
+    /*
     void botKomutEkle(){
-        bot.addCommand(new ProgramCommand() {
-            @Override
-            public boolean run(User user, MessageChannel channel, Guild guild, String label, List<String> args) {
-                dogrula(user,channel,guild,label,args);
-                return false;
-
-            }
-            @Override
-            public Permission getPermissionNeeded() {
-                return Permission.MESSAGE_WRITE;
-            }
-
-            @Override
-            public String getLabel() {
-                return "esle";
-            }
-
-            @Override
-            public String getDescription() {
-                return "Esle komut";
-            }
-
-        });
-        bot.addCommand(new ProgramCommand() {
-            @Override
-            public boolean run(User user, MessageChannel channel, Guild guild, String label, List<String> args) {
-                dogrula(user,channel,guild,label,args);
-                return false;
-
-            }
-            @Override
-            public Permission getPermissionNeeded() {
-                return Permission.MESSAGE_WRITE;
-            }
-
-            @Override
-            public String getLabel() {
-                return "eşle";
-            }
-
-            @Override
-            public String getDescription() {
-                return "Esle komut";
-            }
-
-        });
         bot.addCommand(new ProgramCommand() {
             @Override
             public boolean run(User user, MessageChannel channel, Guild guild, String label, List<String> args) {
@@ -165,11 +123,21 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
             }
 
         });
+        for(ProgramCommand komut : bot.getCommands()){
+            Bukkit.getConsoleSender().sendMessage(komut.getLabel());
+
+        }
     }
-    void rolEsle(User user, MessageChannel channel,Guild guild, String label, List<String> args){
+    */
+    public static void rolEsle(User user, MessageChannel channel, Guild guild, String label, List<String> args){
         if(channel.getIdLong() != ConfigMain.rolkanalID){
             channel.deleteMessageById(channel.getLatestMessageId()).complete();
             channel.sendMessage("<#" + ConfigMain.rolkanalID + "> Kanalına yazmanız gerekiyor").complete().delete().completeAfter(5, TimeUnit.SECONDS);
+            return;
+        }
+        if(!label.equalsIgnoreCase(PREFIX + "rol")){
+            channel.sendMessage("Oyundan /eşle rol yazıp kodunuzu aldıktan sonra bu kanala !rol kod şeklinde yazmalısınız.")
+                    .complete().delete().completeAfter(5,TimeUnit.SECONDS);
             return;
         }
         channel.deleteMessageById(channel.getLatestMessageId()).complete();
@@ -192,7 +160,7 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
                 continue;
             }
             if(Oyuncu.hasPermission(parcalar[0])){
-                guild.getController().addRolesToMember(guild.getMember(user),guild.getJDA().getRoleById(Long.parseLong(parcalar[1]))).complete();
+                guild.addRoleToMember(guild.getMember(user),guild.getJDA().getRoleById(Long.parseLong(parcalar[1]))).complete();
                 Oyuncu.sendMessage(ConfigMain.oyunPrefix + " §eOyundaki yetkiniz Discordda verildi!");
                 channel.sendMessage("Oyun içi rollerin Discord üzerinden verildi "  + "<@" + user.getIdLong() + "> ").complete()
                         .delete().completeAfter(15,TimeUnit.SECONDS);
@@ -203,10 +171,15 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
 
     }
 
-    void dogrula(User user, MessageChannel channel, Guild guild, String label, List<String> args){
+    public static void dogrula(User user, MessageChannel channel, Guild guild, String label, List<String> args){
         if(channel.getIdLong() != ConfigMain.hesapkanalID){
             channel.deleteMessageById(channel.getLatestMessageId()).complete();
             channel.sendMessage("<#" + ConfigMain.hesapkanalID + "> Kanalına yazmanız gerekiyor").complete().delete().completeAfter(5, TimeUnit.SECONDS);
+            return;
+        }
+        if(!label.equalsIgnoreCase(PREFIX + "eşle")&!label.equalsIgnoreCase(PREFIX +"esle")){
+            channel.sendMessage("Oyundan /eşle yazıp kodunuzu aldıktan sonra bu kanala !eşle kod şeklinde yazmalısınız.")
+                    .complete().delete().completeAfter(5,TimeUnit.SECONDS);
             return;
         }
         int arguman;
@@ -245,7 +218,7 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
         ).replace("%discord%","<@!" + user.getId()+">")).complete();
         rolVer(guild,user,Oyuncu);
         MainCommand.kod.remove(arguman);
-        guild.getController().addRolesToMember(guild.getMember(user),guild.getJDA().getRoleById(ConfigMain.EslendiRolID)).complete();
+        guild.addRoleToMember(guild.getMember(user),guild.getJDA().getRoleById(ConfigMain.EslendiRolID)).complete();
         Oyuncu.sendMessage(ConfigMain.oyunPrefix + " " + ConfigMain.HesapEslendi.replace("%discord%",user.getName()));
         data.set("Data." + Oyuncu.getPlayer().getName(),true);
         dataSave();
@@ -259,13 +232,13 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
                 continue;
             }
             if(oyuncu.hasPermission(parcalar[0])){
-                guild.getController().addRolesToMember(guild.getMember(user),guild.getJDA().getRoleById(Long.parseLong(parcalar[1]))).complete();
+                guild.addRoleToMember(guild.getMember(user),guild.getJDA().getRoleById(Long.parseLong(parcalar[1]))).complete();
                 oyuncu.sendMessage(ConfigMain.oyunPrefix + " §eOyundaki yetkiniz Discordda verildi!");
                 return;
             }
         }
     }
-    public void mesajGonder(User user, Player Oyuncu){
+    public static void mesajGonder(User user, Player Oyuncu){
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(Color.red);
         eb.setColor(new Color(0xF40C0C));
@@ -279,7 +252,7 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
             ozel.sendMessage(eb.build()).queue();
         });
     }
-    void komutUygula(Player Oyuncu){
+    static void komutUygula(Player Oyuncu){
         for(String komut : plugin.getConfig().getStringList("Oyun." + "Komutlar")){
             String FinalKomut = komut.replace("%player%",Oyuncu.getPlayer().getName());
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -298,7 +271,6 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
         data = new YamlConfiguration();
         dataFile = new File(getDataFolder(),"data.yml");
         if(!dataFile.exists()){
-            dataFile.getParentFile().mkdirs();
             saveResource("data.yml",false);
         }
         try {
