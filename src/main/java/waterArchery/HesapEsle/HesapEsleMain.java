@@ -22,6 +22,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import static waterArchery.HesapEsle.ConfigMain.ConfigCekici;
@@ -98,37 +99,8 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
             e.printStackTrace();
         }
     }
-    /*
-    void botKomutEkle(){
-        bot.addCommand(new ProgramCommand() {
-            @Override
-            public boolean run(User user, MessageChannel channel, Guild guild, String label, List<String> args) {
-                rolEsle(user,channel,guild,label,args);
-                return false;
 
-            }
-            @Override
-            public Permission getPermissionNeeded() {
-                return Permission.MESSAGE_WRITE;
-            }
 
-            @Override
-            public String getLabel() {
-                return "rol";
-            }
-
-            @Override
-            public String getDescription() {
-                return "Rolleri eşleme komutu";
-            }
-
-        });
-        for(ProgramCommand komut : bot.getCommands()){
-            Bukkit.getConsoleSender().sendMessage(komut.getLabel());
-
-        }
-    }
-    */
     public static void rolEsle(User user, MessageChannel channel, Guild guild, String label, List<String> args){
         if(channel.getIdLong() != ConfigMain.rolkanalID){
             channel.deleteMessageById(channel.getLatestMessageId()).complete();
@@ -160,7 +132,7 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
                 continue;
             }
             if(Oyuncu.hasPermission(parcalar[0])){
-                guild.addRoleToMember(guild.getMember(user),guild.getJDA().getRoleById(Long.parseLong(parcalar[1]))).complete();
+                guild.addRoleToMember(Objects.requireNonNull(guild.getMember(user)), Objects.requireNonNull(guild.getJDA().getRoleById(Long.parseLong(parcalar[1])))).complete();
                 Oyuncu.sendMessage(ConfigMain.oyunPrefix + " §eOyundaki yetkiniz Discordda verildi!");
                 channel.sendMessage("Oyun içi rollerin Discord üzerinden verildi "  + "<@" + user.getIdLong() + "> ").complete()
                         .delete().completeAfter(15,TimeUnit.SECONDS);
@@ -196,13 +168,17 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
             return;
         }
         if(ConfigMain.TekDiscordEsleme){
-            if(guild.getMember(user).getRoles().contains(guild.getRoleById(ConfigMain.EslendiRolID))){
+            if(Objects.requireNonNull(guild.getMember(user)).getRoles().contains(guild.getRoleById(ConfigMain.EslendiRolID))){
                 channel.sendMessage("Bu Discord hesabı ile zaten eşleme yapmışsınız!").complete().delete().completeAfter(5, TimeUnit.SECONDS);
                 return;
             }
         }
 
         Player Oyuncu = MainCommand.kod.get(arguman);
+        if(data.get("Data." + Oyuncu.getName()) !=null){
+            channel.sendMessage("Bu oyun hesabı ile zaten eşleme yapmışsınız!").complete().delete().completeAfter(5, TimeUnit.SECONDS);
+            return;
+        }
         if(Bukkit.getPlayer(MainCommand.kod.get(arguman).getName())==null){
             channel.sendMessage(ConfigMain.OyuncuOffline).complete().delete().completeAfter(5, TimeUnit.SECONDS);
             return;
@@ -216,12 +192,14 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
         }
         channel.sendMessage(ConfigMain.Eslendi.replace("%minecraft%",Oyuncu.getPlayer().getName()
         ).replace("%discord%","<@!" + user.getId()+">")).complete();
-        rolVer(guild,user,Oyuncu);
-        MainCommand.kod.remove(arguman);
-        guild.addRoleToMember(guild.getMember(user),guild.getJDA().getRoleById(ConfigMain.EslendiRolID)).complete();
-        Oyuncu.sendMessage(ConfigMain.oyunPrefix + " " + ConfigMain.HesapEslendi.replace("%discord%",user.getName()));
         data.set("Data." + Oyuncu.getPlayer().getName(),true);
         dataSave();
+        rolVer(guild,user,Oyuncu);
+        MainCommand.kod.remove(arguman);
+        if(guild.getRoleById(ConfigMain.EslendiRolID) != null){
+            guild.addRoleToMember(Objects.requireNonNull(guild.getMember(user)), Objects.requireNonNull(guild.getJDA().getRoleById(ConfigMain.EslendiRolID))).complete();
+        }
+        Oyuncu.sendMessage(ConfigMain.oyunPrefix + " " + ConfigMain.HesapEslendi.replace("%discord%",user.getName()));
         komutUygula(Oyuncu);
     }
 
@@ -232,7 +210,7 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
                 continue;
             }
             if(oyuncu.hasPermission(parcalar[0])){
-                guild.addRoleToMember(guild.getMember(user),guild.getJDA().getRoleById(Long.parseLong(parcalar[1]))).complete();
+                guild.addRoleToMember(Objects.requireNonNull(guild.getMember(user)), Objects.requireNonNull(guild.getJDA().getRoleById(Long.parseLong(parcalar[1])))).complete();
                 oyuncu.sendMessage(ConfigMain.oyunPrefix + " §eOyundaki yetkiniz Discordda verildi!");
                 return;
             }
