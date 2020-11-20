@@ -134,7 +134,7 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
                 continue;
             }
             if(Oyuncu.hasPermission(parcalar[0])){
-                if(guild.getMemberById(member.getUser().getIdLong()) ==null){
+                if(member ==null){
                     channel.sendMessage("Discord hesabı bulunamadı." + " " + member.getUser().getIdLong()).complete().delete().completeAfter(5, TimeUnit.SECONDS);
                     return;
                 }
