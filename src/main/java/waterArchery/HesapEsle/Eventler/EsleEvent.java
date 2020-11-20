@@ -44,7 +44,7 @@ public class EsleEvent extends ListenerAdapter {
             }
             String[] args = mesaj.split(" ");
 
-            HesapEsleMain.dogrula(e.getMember().getUser(),e.getChannel(),e.getGuild(),label, Arrays.asList(args));
+            HesapEsleMain.dogrula(e.getMember(),e.getChannel(),e.getGuild(),label, Arrays.asList(args));
 
         }
         if(e.getChannel().getIdLong() == ConfigMain.rolkanalID){
@@ -75,7 +75,7 @@ public class EsleEvent extends ListenerAdapter {
             }
             String[] args = mesaj.split(" ");
 
-            HesapEsleMain.rolEsle(e.getMember().getUser(),e.getChannel(),e.getGuild(),label, Arrays.asList(args));
+            HesapEsleMain.rolEsle(e.getMember(),e.getChannel(),e.getGuild(),label, Arrays.asList(args));
 
         }
     }

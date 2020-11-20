@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 import org.bukkit.Bukkit;
@@ -101,7 +102,8 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
     }
 
 
-    public static void rolEsle(User user, MessageChannel channel, Guild guild, String label, List<String> args){
+    @SuppressWarnings("ConstantConditions")
+    public static void rolEsle(Member member, MessageChannel channel, Guild guild, String label, List<String> args){
         if(channel.getIdLong() != ConfigMain.rolkanalID){
             channel.deleteMessageById(channel.getLatestMessageId()).complete();
             channel.sendMessage("<#" + ConfigMain.rolkanalID + "> Kanalına yazmanız gerekiyor").complete().delete().completeAfter(5, TimeUnit.SECONDS);
@@ -132,9 +134,17 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
                 continue;
             }
             if(Oyuncu.hasPermission(parcalar[0])){
-                guild.addRoleToMember(Objects.requireNonNull(guild.getMember(user)), Objects.requireNonNull(guild.getJDA().getRoleById(Long.parseLong(parcalar[1])))).complete();
+                if(guild.getMemberById(member.getUser().getIdLong()) ==null){
+                    channel.sendMessage("Discord hesabı bulunamadı." + " " + member.getUser().getIdLong()).complete().delete().completeAfter(5, TimeUnit.SECONDS);
+                    return;
+                }
+                if(guild.getRoleById(ConfigMain.EslendiRolID)==null){
+                    channel.sendMessage("Discordda böyle bir rol bulunamadı" + " " + guild.getRoleById(ConfigMain.EslendiRolID)).complete().delete().completeAfter(5, TimeUnit.SECONDS);
+                    return;
+                }
+                guild.addRoleToMember(member, guild.getJDA().getRoleById(Long.parseLong(parcalar[1]))).complete();
                 Oyuncu.sendMessage(ConfigMain.oyunPrefix + " §eOyundaki yetkiniz Discordda verildi!");
-                channel.sendMessage("Oyun içi rollerin Discord üzerinden verildi "  + "<@" + user.getIdLong() + "> ").complete()
+                channel.sendMessage("Oyun içi rollerin Discord üzerinden verildi "  + "<@" + member.getUser().getIdLong() + "> ").complete()
                         .delete().completeAfter(15,TimeUnit.SECONDS);
                 MainCommand.Rolkod.remove(arg);
                 return;
@@ -143,7 +153,8 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
 
     }
 
-    public static void dogrula(User user, MessageChannel channel, Guild guild, String label, List<String> args){
+    @SuppressWarnings("ConstantConditions")
+    public static void dogrula(Member member, MessageChannel channel, Guild guild, String label, List<String> args){
         if(channel.getIdLong() != ConfigMain.hesapkanalID){
             channel.deleteMessageById(channel.getLatestMessageId()).complete();
             channel.sendMessage("<#" + ConfigMain.hesapkanalID + "> Kanalına yazmanız gerekiyor").complete().delete().completeAfter(5, TimeUnit.SECONDS);
@@ -168,10 +179,23 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
             return;
         }
         if(ConfigMain.TekDiscordEsleme){
-            if(Objects.requireNonNull(guild.getMember(user)).getRoles().contains(guild.getRoleById(ConfigMain.EslendiRolID))){
-                channel.sendMessage("Bu Discord hesabı ile zaten eşleme yapmışsınız!").complete().delete().completeAfter(5, TimeUnit.SECONDS);
+            if(member ==null){
+                channel.sendMessage("Discord hesabı bulunamadı.").complete().delete().completeAfter(5, TimeUnit.SECONDS);
                 return;
             }
+            if(guild.getRoleById(ConfigMain.EslendiRolID)==null){
+                channel.sendMessage("Discordda böyle bir rol bulunamadı" + " " + guild.getRoleById(ConfigMain.EslendiRolID)).complete().delete().completeAfter(5, TimeUnit.SECONDS);
+                return;
+            }
+            try{
+                if(member.getRoles().contains(guild.getRoleById(ConfigMain.EslendiRolID))){
+                    channel.sendMessage("Bu Discord hesabı ile zaten eşleme yapmışsınız!").complete().delete().completeAfter(5, TimeUnit.SECONDS);
+                    return;
+                }
+            }catch (NullPointerException e){
+                //
+            }
+            guild.addRoleToMember(member,guild.getRoleById(ConfigMain.EslendiRolID)).complete();
         }
 
         Player Oyuncu = MainCommand.kod.get(arguman);
@@ -188,29 +212,35 @@ public final class HesapEsleMain extends JavaPlugin implements Listener, Command
             return;
         }
         if(ConfigMain.OzelMesaj){
-            mesajGonder(user,Oyuncu);
+            mesajGonder(member.getUser(),Oyuncu);
         }
         channel.sendMessage(ConfigMain.Eslendi.replace("%minecraft%",Oyuncu.getPlayer().getName()
-        ).replace("%discord%","<@!" + user.getId()+">")).complete();
+        ).replace("%discord%","<@!" + member.getUser().getId()+">")).complete();
         data.set("Data." + Oyuncu.getPlayer().getName(),true);
         dataSave();
-        rolVer(guild,user,Oyuncu);
+        rolVer(guild,member,Oyuncu);
         MainCommand.kod.remove(arguman);
-        if(guild.getRoleById(ConfigMain.EslendiRolID) != null){
-            guild.addRoleToMember(Objects.requireNonNull(guild.getMember(user)), Objects.requireNonNull(guild.getJDA().getRoleById(ConfigMain.EslendiRolID))).complete();
-        }
-        Oyuncu.sendMessage(ConfigMain.oyunPrefix + " " + ConfigMain.HesapEslendi.replace("%discord%",user.getName()));
+        Oyuncu.sendMessage(ConfigMain.oyunPrefix + " " + ConfigMain.HesapEslendi.replace("%discord%",member.getUser().getName()));
         komutUygula(Oyuncu);
     }
 
-    static void rolVer(Guild guild, User user, Player oyuncu){
+    @SuppressWarnings("ConstantConditions")
+    static void rolVer(Guild guild, Member member, Player oyuncu){
         for(String YetkiVeID : plugin.getConfig().getStringList("Oyun." + "Yetkiler")){
             String[] parcalar = YetkiVeID.split(" / ");
             if(guild.getRoleById(Long.parseLong(parcalar[1])) == null){
                 continue;
             }
+            if(member ==null){
+                oyuncu.sendMessage("Discord hesabı bulunamadı." + " " + member.getUser().getIdLong());
+                return;
+            }
+            if(guild.getRoleById(Long.parseLong(parcalar[1]))==null){
+                oyuncu.sendMessage("Discordda böyle bir rol bulunamadı" + " " + guild.getRoleById(ConfigMain.EslendiRolID));
+                return;
+            }
             if(oyuncu.hasPermission(parcalar[0])){
-                guild.addRoleToMember(Objects.requireNonNull(guild.getMember(user)), Objects.requireNonNull(guild.getJDA().getRoleById(Long.parseLong(parcalar[1])))).complete();
+                guild.addRoleToMember(member,guild.getRoleById(Long.parseLong(parcalar[1]))).complete();
                 oyuncu.sendMessage(ConfigMain.oyunPrefix + " §eOyundaki yetkiniz Discordda verildi!");
                 return;
             }
